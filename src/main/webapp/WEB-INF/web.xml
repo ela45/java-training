@@ -1,0 +1,26 @@
+<!-- webapp/WEB-INF/web.xml -->
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+	version="3.0">
+
+	<display-name>To do List</display-name>
+	<context-param>
+		<param-name>jdbcURL</param-name>
+		<param-value>jdbc:mysql://localhost:3306/webappdb</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>jdbcUsername</param-name>
+		<param-value>person_usr</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>jdbcPassword</param-name>
+		<param-value>personpwd</param-value>
+	</context-param>
+	<welcome-file-list>
+		<welcome-file>list-person.do</welcome-file>
+	</welcome-file-list>
+
+</web-app>
