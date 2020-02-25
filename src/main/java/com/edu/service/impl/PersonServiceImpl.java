@@ -72,6 +72,7 @@ public class PersonServiceImpl implements PersonService {
 		boolean wasUpdated=false;
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Date dateBirth = null;
+	
 		try {
 			dateBirth = sdf.parse(date);
 		} catch (ParseException e) {

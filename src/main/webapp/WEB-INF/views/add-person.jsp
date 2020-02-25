@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Todos</title>
+<title>People</title>
 <link href="webjars/bootstrap/3.3.6/css/bootstrap.min.css"
 	rel="stylesheet">
 
@@ -15,6 +15,33 @@
 	background-color: #f5f5f5;
 }
 </style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script>
+function savePerson() {
+	
+	 $.ajax({
+		    url: '/people.do' + '?' + $.param({"id": $("#id").val(), "name":$("#name").val(), "age":$("#age").val(),"birthDate":$("#birthDate").val() }),
+		    type: 'POST',
+		    success: function(result) {
+		
+		    	alert("Person inserted");
+		    }
+		});
+	}
+function updatePerson() {
+	
+	 $.ajax({
+		    url: '/people.do' + '?' + $.param({"id": $("#id").val(), "name":$("#name").val(), "age":$("#age").val(),"birthDate":$("#birthDate").val() }),
+
+		    type: 'PUT',
+		    success: function(result) {
+		        alert("Person updated");
+		    	
+		    }
+		});
+	}
+
+</script>
 </head>
 
 <body>
@@ -24,8 +51,8 @@
 		<a href="/" class="navbar-brand">Persons app</a>
 
 		<ul class="nav navbar-nav">
-			<li class="active"><a href="/list-person.do">Home</a></li>
-			<li><a href="/add-person.do">Add Person</a></li>
+			<li class="active"><a href="/people.do">Home</a></li>
+			<li><a href="/insert">Add Person</a></li>
 		
 		</ul>
 
@@ -34,18 +61,7 @@
 	</nav>
 
 	<div class="container">
-	
-		<c:if test="${person != null}">
-              
-			<form action="update-person.do" method="post">                    
-		</c:if>
-		                    
-		<c:if test="${person == null}">
-                      
-
-		<form action="add-person.do" method="post">                    
-		</c:if>
-
+	<form name="personForm"> 
 
 <table border="1" cellpadding="5">
             <caption>
@@ -59,13 +75,13 @@
                 </h2>
             </caption>
                 <c:if test="${person != null}">
-                    <input type="hidden" name="id" value="<c:out value='${person.id}' />" />
+                    <input id="id" type="hidden" name="id" value="<c:out value='${person.id}' />" />
                 </c:if>           
 
             <tr>
                 <th>Name: </th>
                 <td>
-                    <input type="text" name="name" size="20"
+                    <input id="name" type="text" name="name" size="20"
                             value="<c:out value='${person.name}' />"
                         />
                 </td>
@@ -73,7 +89,7 @@
             <tr>
                 <th>Age: </th>
                 <td>
-                    <input type="text" name="age" size="3"
+                    <input id="age" type="text" name="age" size="3"
                             value="<c:out value='${person.age}' />"
                     />
                 </td>
@@ -81,7 +97,7 @@
             <tr>
                 <th>Date: </th>
                 <td>
-                    <input type="text" name="birthDate" size="15"
+                    <input id="birthDate" type="text" name="birthDate" size="15"
                             value="<c:out value='${person.birthDate}' />"
                     />
                     format: yyyy-MM-dd
@@ -89,7 +105,14 @@
             </tr>
             <tr>
                 <td colspan="2" align="center">
-                    <input type="submit" value="Save" />
+                <c:if test="${person != null}">
+                 <input type="submit" value="Update" onClick=updatePerson() />
+                </c:if>
+                <c:if test="${person == null}">
+                 <input type="submit" value="Save" onClick=savePerson() />
+                </c:if>
+                
+                   
                 </td>
             </tr>
         </table>

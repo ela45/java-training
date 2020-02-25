@@ -19,8 +19,19 @@
 		<param-name>jdbcPassword</param-name>
 		<param-value>personpwd</param-value>
 	</context-param>
+	
 	<welcome-file-list>
-		<welcome-file>list-person.do</welcome-file>
+		<welcome-file>/</welcome-file>
 	</welcome-file-list>
+	
+	<servlet>
+        <servlet-name>ControllerServlet</servlet-name>
+        <servlet-class>com.edu.servlets.PersonServlet</servlet-class>
+    </servlet>
+ 
+    <servlet-mapping>
+        <servlet-name>ControllerServlet</servlet-name>
+        <url-pattern>/</url-pattern>
+    </servlet-mapping>
 
 </web-app>
