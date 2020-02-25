@@ -16,6 +16,21 @@
 	background-color: #f5f5f5;
 }
 </style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script>
+function deletePerson(id) {
+	
+	 $.ajax({
+		    url: '/people.do' + '?' + $.param({"id": id}),
+		    type: 'DELETE',
+		    success: function(result) {
+		    	location.reload();
+		    }
+		});
+	}
+
+
+</script>
 </head>
 
 <body>
@@ -26,7 +41,7 @@
 
 		<ul class="nav navbar-nav">
 			<li class="active"><a href="/list-person.do">Home</a></li>
-			<li><a href="/add-person.do">Add Person</a></li>
+			<li><a href="/insert">Add Person</a></li>
 			
 		</ul>
 
@@ -59,8 +74,9 @@
 					<td><fmt:formatDate value="${person.birthDate}" type="date" />
 					</td>
 					<td>
-						<a href="delete-person.do?id=${person.id}">DELETE</a><br>
-						<a href="add-person.do?id=${person.id}">UPDATE</a>
+						<input type="button" id="deleteBtn" value="DELETE" onClick=deletePerson(${person.id}); />
+
+						<a href="/insert?id=${person.id}">UPDATE</a>
 					</td>
 				</tr>
 
