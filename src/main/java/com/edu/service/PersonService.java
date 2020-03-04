@@ -8,8 +8,8 @@ public interface PersonService {
 
 	List<Person> getPersonList();
 	boolean deletePerson(String id);
-	boolean addPerson(String parameter, String parameter2, String parameter3, String parameter4);
-	boolean updatePerson(String parameter, String parameter2, String parameter3, String parameter4);
+	boolean addPerson(String name, String id, String date, String age);
+	boolean updatePerson(String name, String id, String date, String age);
 	Person getPersonById(String id);
 
 }

@@ -3,6 +3,7 @@ package com.edu.utils;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 public class PersonUtils {
@@ -39,5 +40,19 @@ public class PersonUtils {
 		System.out.println("The format is not valid "+e.getMessage());
 		}
 		return dateBirth;
+	}
+	
+	public static String getJSONStringList(List<?> lista ) throws Exception{
+		StringBuilder jsonList=new StringBuilder( "{[");
+		
+		for (int i = 0; i < lista.size(); i++) {
+			jsonList.append(JsonSerializer.serilaize(lista.get(i)));
+			if(i!=lista.size()-1) {
+				jsonList.append(",");
+			}
+		}
+		jsonList.append("]}");
+			
+		return jsonList.toString();
 	}
 }
