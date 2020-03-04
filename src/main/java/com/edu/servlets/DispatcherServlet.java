@@ -3,6 +3,7 @@ package com.edu.servlets;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.net.URL;
@@ -28,6 +29,7 @@ import com.edu.annotations.RequestMapping;
 import com.edu.exceptions.BadRequestException;
 import com.edu.proxy.DynamicProxy;
 import com.edu.utils.Constants;
+import com.edu.utils.HttpStatus;
 import com.edu.utils.RequestMethod;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -37,22 +39,29 @@ public class DispatcherServlet extends HttpServlet {
 	private final static Logger LOGGER = Logger.getLogger(DispatcherServlet.class);
 
 	private static List<Class<?>> classes = new ArrayList<Class<?>>();
-
+	private String jdbcURL;
+	private String jdbcUsername;
+	private String jdbcPassword;
+	
 	public void init() {
-		String jdbcURL = getServletContext().getInitParameter("jdbcURL");
-		String jdbcUsername = getServletContext().getInitParameter("jdbcUsername");
-		String jdbcPassword = getServletContext().getInitParameter("jdbcPassword");
+		 jdbcURL = getServletContext().getInitParameter("jdbcURL");
+		 jdbcUsername = getServletContext().getInitParameter("jdbcUsername");
+		 jdbcPassword = getServletContext().getInitParameter("jdbcPassword");
 		getClassList();
 	}
 
 	protected void service(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		PrintWriter out = response.getWriter();
+		String body = null;
 		try {
 			String requestURL = getURL(request);
 			String httpMethod = request.getMethod();
-			String body = null;
 			LOGGER.info("URL Request " + requestURL);
 			LOGGER.info("Http Method " + httpMethod);
+		
+			response.setContentType("application/json");
+			response.setCharacterEncoding("UTF-8");
 			/*
 			 * Get parameters request
 			 */
@@ -89,15 +98,11 @@ public class DispatcherServlet extends HttpServlet {
 				Class<?> controllerClass = getRequestMappingController(dividedURL, controllersList);
 				String responseController=getControllerMethodResponse(controllerClass, request, requestDataValues);
 				if(Objects.isNull(responseController)) {
-					response.setStatus(404);
+					response.setStatus(HttpStatus.NOT_FOUND_CODE);
 					
 				}else {
-					response.setStatus(200);
-					PrintWriter out = response.getWriter();
-					response.setContentType("application/json");
-					response.setCharacterEncoding("UTF-8");
-					out.print(responseController);
-					out.flush();
+					response.setStatus(HttpStatus.OK);
+					writeResponse(out,responseController);
 				}
 				
 			} else {
@@ -105,16 +110,22 @@ public class DispatcherServlet extends HttpServlet {
 			}
 
 		} catch (BadRequestException e) {
-			response.setStatus(404);
+			response.setStatus(HttpStatus.NOT_FOUND_CODE);
+			writeResponse(out,e.getMessage());
 			LOGGER.error("The request can not be handdle bad request exception " + e.getMessage());
 		}
 		catch (Exception e) {
-			response.setStatus(500);
+			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR_CODE);
+			writeResponse(out,e.getMessage());
 			LOGGER.error("The request can not be handle ERROR 404. " + e.getMessage());
 		}
 
 	}
 
+	private void writeResponse(PrintWriter printer,String data) {
+		printer.print(data);
+		printer.flush();
+	}
 	private Class<?> getRequestMappingController(String[] urlMapping, List<Class<?>> controllersList) {
 		String urlController = urlMapping[1];
 		Class<?> controllerClass = controllersList.stream()
@@ -217,7 +228,9 @@ public class DispatcherServlet extends HttpServlet {
 		/*
 		 * Call the proxy
 		 */
-		Object proxy = DynamicProxy.newInstance(controllerClass.newInstance());
+		Constructor<?> cons = controllerClass.getConstructor(String.class,String.class,String.class);
+		Object object = cons.newInstance(jdbcURL,jdbcUsername,jdbcPassword);
+		Object proxy = DynamicProxy.newInstance(object);
 		Object controllerResponse=methodInterface.invoke(proxy, parametersMethodValues);
 		
 		String response=null;

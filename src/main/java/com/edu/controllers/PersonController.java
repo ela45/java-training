@@ -22,9 +22,12 @@ import com.edu.utils.PersonUtils;
 public class PersonController implements PersonControllerI {
 	private final static Logger LOGGER = Logger.getLogger(DynamicProxy.class);
 	
-	PersonService personService=new PersonServiceImpl(
-			"jdbc:mysql://localhost:3306/webappdb","person_usr","personpwd");
-
+	PersonService personService;
+	
+	public PersonController(String url,String userName,String pwd){
+		personService=new PersonServiceImpl(url,userName,pwd);
+	}
+	
 	@RequestMapping(method = RequestMethod.GET)
 	public String getAll() {
 		String response=null;
@@ -45,9 +48,8 @@ public class PersonController implements PersonControllerI {
 			@Parameters(name="name")String name,
 			@Parameters(name="date") String date,
 			@Parameters(name="age") String age) {
-		LOGGER.info("Saving a person ....date"+date);
-		LOGGER.info("Saving a person ....name"+name);
-		LOGGER.info("Saving a person ....age"+age);
+		LOGGER.info("Saving a person ....date "+date+" name "+name+" age "+age);
+		
 		String response=null;
 		try {
 			if(personService.addPerson(name, "", date, age))

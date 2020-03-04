@@ -25,12 +25,12 @@
 	</welcome-file-list>
 	
 	<servlet>
-        <servlet-name>ControllerServlet</servlet-name>
-        <servlet-class>com.edu.servlets.PersonServlet</servlet-class>
+        <servlet-name>DispatcherServlet</servlet-name>
+        <servlet-class>com.edu.servlets.DispatcherServlet</servlet-class>
     </servlet>
  
     <servlet-mapping>
-        <servlet-name>ControllerServlet</servlet-name>
+        <servlet-name>DispatcherServlet</servlet-name>
         <url-pattern>/</url-pattern>
     </servlet-mapping>
 
